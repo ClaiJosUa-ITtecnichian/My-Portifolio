@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio – Your Name</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --purple: #7c3aed;
+    --purple-light: #a855f7;
+    --purple-dark: #4c1d95;
+    --purple-glow: #c084fc;
+    --black: #0a0a0f;
+    --dark: #12121a;
+    --surface: #1a1a2e;
+    --surface2: #16213e;
+    --white: #f8f8ff;
+    --gray: #94a3b8;
+    --border: rgba(124,58,237,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(124,58,237,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(168,85,247,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, rgba(10,10,15,0.95) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== BOOK WRAPPER ===== */
+  .book-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 960px;
+    max-width: 98vw;
+    perspective: 1800px;
+  }
+
+  /* ===== BOOK ===== */
+  .book {
+    width: 100%;
+    background: var(--surface);
+    border-radius: 4px 16px 16px 4px;
+    box-shadow:
+      -6px 0 16px rgba(0,0,0,0.6),
+      6px 6px 40px rgba(124,58,237,0.25),
+      0 0 0 1px var(--border);
+    overflow: hidden;
+    display: flex;
+    min-height: 540px;
+    position: relative;
+  }
+
+  /* Spine */
+  .book::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, transparent, var(--purple) 20%, var(--purple-light) 50%, var(--purple) 80%, transparent);
+    transform: translateX(-50%);
+    z-index: 10;
+    opacity: 0.7;
+    box-shadow: 0 0 12px var(--purple-glow);
+  }
+
+  /* ===== PAGES ===== */
+  .page {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.45s ease;
+  }
+  .page.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Two-column layout */
+  .page-left, .page-right {
+    width: 50%;
+    padding: 44px 40px;
+    position: relative;
+  }
+  .page-left  { background: #f0f0f8; color: #111; }
+  .page-right { background: var(--dark); color: var(--white); }
+
+  /* Full-width pages */
+  .page-full {
+    width: 100%;
+    padding: 44px 60px;
+    background: var(--surface);
+  }
+
+  /* ===== HEADINGS ===== */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+    position: relative;
+    display: inline-block;
+  }
+  .section-title::after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 48px;
+    background: var(--purple);
+    margin-top: 6px;
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--purple-glow);
+  }
+  .page-left .section-title { color: #111; }
+  .page-right .section-title { color: var(--white); }
+  .page-right .section-title::after { background: var(--purple-glow); }
+
+  /* ===== NAVIGATION ===== */
+  .nav-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: rgba(0,0,0,0.15);
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--gray);
+    z-index: 20;
+  }
+  .nav-bar button {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--purple-light);
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-bar button:hover {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #fff;
+  }
+  .nav-bar .page-num { font-weight: 600; letter-spacing: 1px; color: var(--purple-glow); }
+
+  /* ===== PAGE 1: COVER ===== */
+  .cover-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 18px;
+    background: linear-gradient(135deg, #1a0533 0%, #0a0a1a 100%);
+    color: var(--white);
+    padding-bottom: 60px;
+  }
+
+  .avatar-ring {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    border: 3px solid var(--purple);
+    box-shadow: 0 0 0 6px rgba(124,58,237,0.2), 0 0 30px rgba(124,58,237,0.4);
+    overflow: hidden;
+    position: relative;
+    background: var(--surface);
+  }
+  .avatar-ring img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .avatar-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    color: var(--purple-glow);
+    background: linear-gradient(135deg, #1a0533, #0a0a2e);
+  }
+
+  .cover-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .cover-role {
+    color: var(--purple-glow);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .social-links {
+    display: flex; gap: 12px; margin-top: 4px;
+  }
+  .social-links a {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--purple-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .social-links a:hover {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #fff;
+    box-shadow: 0 0 12px var(--purple-glow);
+  }
+
+  .cover-bio {
+    font-size: 0.88rem;
+    color: var(--gray);
+    line-height: 1.7;
+    max-width: 280px;
+    text-align: center;
+  }
+
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    padding: 9px 22px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--purple);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+  }
+  .btn-primary:hover { background: var(--purple-light); box-shadow: 0 6px 20px rgba(168,85,247,0.5); }
+  .btn-outline {
+    background: transparent;
+    color: var(--purple-light);
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--purple-dark); color: #fff; }
+
+  /* Work experience on right of cover */
+  .cover-right {
+    background: var(--dark);
+    padding-bottom: 60px;
+  }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--purple), var(--purple-dark));
+    border-radius: 2px;
+  }
+  .timeline-item { position: relative; margin-bottom: 28px; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -17px; top: 4px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--purple);
+    border: 2px solid var(--dark);
+    box-shadow: 0 0 8px var(--purple-glow);
+  }
+  .timeline-date {
+    font-size: 0.75rem;
+    color: var(--purple-glow);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+  .timeline-date i { margin-right: 5px; }
+  .timeline-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: var(--white);
+  }
+  .page-left .timeline-title { color: #111; }
+  .page-left .timeline::before { background: linear-gradient(to bottom, var(--purple), #a855f7); }
+  .page-left .timeline-item::before { border-color: #f0f0f8; }
+  .page-left .timeline-date { color: var(--purple); }
+  .timeline-desc {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--gray);
+  }
+  .page-left .timeline-desc { color: #555; }
+
+  /* ===== SERVICES GRID ===== */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .service-card {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    background: rgba(124,58,237,0.05);
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .service-card:hover {
+    border-color: var(--purple);
+    background: rgba(124,58,237,0.12);
+    box-shadow: 0 0 20px rgba(124,58,237,0.2);
+    transform: translateY(-2px);
+  }
+  .service-icon {
+    font-size: 1.6rem;
+    color: var(--purple-glow);
+    margin-bottom: 8px;
+  }
+  .service-name {
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 6px;
+    color: var(--white);
+  }
+  .service-desc {
+    font-size: 0.76rem;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .btn-read-more {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-read-more:hover { background: var(--purple-light); }
+
+  /* ===== SKILLS PAGE ===== */
+  .skills-columns { display: flex; gap: 32px; }
+  .skills-col { flex: 1; }
+  .skills-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: var(--purple-glow);
+  }
+
+  .skill-item { margin-bottom: 14px; }
+  .skill-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem; font-weight: 600;
+    margin-bottom: 5px; color: var(--white);
+  }
+  .skill-pct { color: var(--purple-glow); }
+  .skill-bar-bg {
+    height: 7px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-glow));
+    border-radius: 4px;
+    box-shadow: 0 0 8px var(--purple-glow);
+    transition: width 0.8s ease;
+  }
+
+  /* Languages */
+  .lang-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .lang-badge {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--purple-light);
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(124,58,237,0.06);
+  }
+  .lang-badge i { color: var(--purple-glow); }
+  .lang-level {
+    font-size: 0.7rem; color: var(--gray); font-weight: 400;
+  }
+
+  /* ===== CERTIFICATIONS PAGE ===== */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .cert-card {
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 16px;
+    text-align: center;
+    background: rgba(124,58,237,0.05);
+    transition: all 0.25s;
+  }
+  .cert-card:hover {
+    border-color: var(--purple);
+    background: rgba(124,58,237,0.14);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.2);
+  }
+  .cert-icon { font-size: 2rem; color: var(--purple-glow); margin-bottom: 10px; }
+  .cert-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; color: var(--white); }
+  .cert-org { font-size: 0.75rem; color: var(--gray); margin-bottom: 6px; }
+  .cert-year {
+    font-size: 0.7rem;
+    background: rgba(124,58,237,0.2);
+    color: var(--purple-glow);
+    border-radius: 12px;
+    padding: 2px 10px;
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  /* ===== CONTACT PAGE ===== */
+  .contact-page {
+    display: flex;
+    gap: 0;
+    min-height: 540px;
+  }
+  .contact-left {
+    width: 45%;
+    background: linear-gradient(135deg, var(--purple-dark) 0%, #1a0533 100%);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+  .contact-left h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  .contact-left p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+  }
+  .contact-info-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.85rem;
+    color: var(--white);
+  }
+  .contact-info-item i {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(124,58,237,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--purple-glow);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .contact-right {
+    width: 55%;
+    background: var(--dark);
+    padding: 48px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding-bottom: 72px;
+  }
+  .contact-right h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+    color: var(--white);
+  }
+  .field-group {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .field-group label { font-size: 0.76rem; color: var(--gray); font-weight: 600; letter-spacing: 0.5px; }
+  .field-group input, .field-group textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: none;
+  }
+  .field-group input:focus, .field-group textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  }
+  .field-group textarea { height: 90px; }
+  .btn-send {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 32px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+    letter-spacing: 0.5px;
+  }
+  .btn-send:hover { background: var(--purple-light); box-shadow: 0 6px 22px rgba(168,85,247,0.5); }
+
+  /* ===== PAGE 2 layout (Education left + Services right) ===== */
+  .p2-left { background: #f4f4fc; }
+  .p2-right { background: var(--dark); }
+
+  /* ===== SKILLS + LANGUAGES layout ===== */
+  .skills-page-inner { display: flex; height: 100%; }
+  .skills-half {
+    width: 50%;
+    padding: 44px 36px;
+    padding-bottom: 60px;
+  }
+  .skills-half:first-child { background: #f4f4fc; color: #111; }
+  .skills-half:last-child  { background: var(--dark); }
+  .skills-half .section-title { color: inherit; }
+  .skills-half:first-child .section-title::after { background: var(--purple); }
+  .skills-half:last-child .section-title::after { background: var(--purple-glow); }
+  .skills-half .skill-label { color: #111; }
+  .skills-half:last-child .skill-label { color: var(--white); }
+  .skills-half .skill-bar-bg { background: rgba(0,0,0,0.1); }
+  .skills-half:last-child .skill-bar-bg { background: rgba(255,255,255,0.08); }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="book-wrapper">
+  <div class="book">
+
+    <!-- ===== PAGE 1: COVER + WORK EXPERIENCE ===== -->
+    <div class="page active" id="page-1">
+      <div class="page-left cover-left">
+        <div class="avatar-ring">
+          <img src="Picture.png">
+        </div>
+        <div>
+          <div class="cover-name">Claida Jossias Uanheca</div>
+          <div class="cover-role">Data Scientist|| Youtbe Content Creator|| Software Developer</div>
+        </div>
+        <div class="social-links">
+          <a href="https://www.facebook.com/share/18uoDMcNWF/"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/ClaidaJossiasUa"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.linkedin.com/in/claida-jossias-uanheca-3157a2380?utm_source=share_via&utm_content=profile&utm_medium=member_android"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://www.instagram.com/claida_jossias?igsh=MXBnam14OWU1MjkybA=="><i class="fab fa-instagram"></i></a>
+          <a href="https://github.com/ClaiJosUa-ITtecnichian"><i class="fab fa-github"></i></a>
+         </div>
+        <p class="cover-bio">I am Claida Jossias Uanheca, a Data Science undergraduate at Nilai University.
+Passionate about logical reasoning, programming, and structured problem-solving.
+Skilled in multilingual communication, bridging Portuguese, English, and French.
+Driven by curiosity and cultural pride, I adapt quickly and lead with empathy.
+</p>
+        <div class="btn-group">
+          <button class="btn btn-primary"><i class="fas fa-download" style="margin-right:6px;"></i>Download CV</button>
+          <button class="btn btn-outline" onclick="goTo(5)">Contact Me</button>
+        </div>
+      </div>
+
+      <div class="page-right cover-right" style="padding-bottom:60px;">
+        <h2 class="section-title">Work Experience</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date"><i class="fas fa-calendar-alt"></i>2022 – 2023</div>
+            <div class="timeline-title">Web Developer – JP Morgan Chase</div>
+            <div class="timeline-desc">Developed and maintained scalable web applications, collaborated with cross-functional teams to deliver high-quality digital solutions.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date"><i class="fas fa-calendar-alt"></i>2021 – 2022</div>
+            <div class="timeline-title">Web Developer – Bank of America</div>
+            <div class="timeline-desc">Built responsive interfaces and REST API integrations, improved page load performance by 40% through code optimization.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date"><i class="fas fa-calendar-alt"></i>2020 – 2021</div>
+            <div class="timeline-title">Junior Developer – Allianz</div>
+            <div class="timeline-desc">Assisted in building internal dashboards and automation tools. Gained strong experience in JavaScript and modern frameworks.</div>
+          </div>
+        </div>
+        <div class="nav-bar" style="position:absolute;">
+          <button onclick="navigate(-1)">&#8592; Prev</button>
+          <span class="page-num" id="pnum-r1">1 / 5</span>
+          <button onclick="navigate(1)">Next &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE 2: EDUCATION + SERVICES ===== -->
+    <div class="page" id="page-2">
+      <div class="page-left p2-left">
+        <h2 class="section-title">Education</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date" style="color:var(--purple);"><i class="fas fa-calendar-alt"></i>June 2025 – June 2028</div>
+            <div class="timeline-title" style="color:#111;">Nilai University – Malaysia (Nilai)</div>
+            <div class="timeline-desc" style="color:#555;">I studied Computer Science and Data Science.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date" style="color:var(--purple);"><i class="fas fa-calendar-alt"></i>January 2025 – April 2025</div>
+            <div class="timeline-title" style="color:#111;">Universidade Eduardo Mondlane – Mozambique (Maputo)</div>
+            <div class="timeline-desc" style="color:#555;">I studied Chemical Engineering for three months.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date" style="color:var(--purple);"><i class="fas fa-calendar-alt"></i>2022 – 2024</div>
+            <div class="timeline-title" style="color:#111;">Externato Cantinho do Céu – Mozambique (Maputo)</div>
+            <div class="timeline-desc" style="color:#555;">I studied from Grade 10 to Grade 12.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date" style="color:var(--purple);"><i class="fas fa-calendar-alt"></i>2013 – 2021</div>
+            <div class="timeline-title" style="color:#111;">Escola Comunitária Missão Yoido – Mozambique (Maputo)</div>
+            <div class="timeline-desc" style="color:#555;">I studied from Grade 1 to Grade 9.</div>
+          </div>
+        </div>
+        <div class="nav-bar" style="position:absolute;">
+          <button onclick="navigate(-1)">&#8592; Prev</button>
+          <span class="page-num" id="pnum-l2">2 / 5</span>
+          <button onclick="navigate(1)">Next &#8594;</button>
+        </div>
+      </div>
+
+      <div class="page-right p2-right">
+        <h2 class="section-title">My Services</h2>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-code"></i></div>
+            <div class="service-name">Web Development</div>
+            <div class="service-desc">Full-stack development with modern frameworks and clean, maintainable code.</div>
+            <button class="btn-read-more">Read More</button>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
+            <div class="service-name">Creative Design</div>
+            <div class="service-desc">Pixel-perfect UI/UX design that balances aesthetics with usability.</div>
+            <button class="btn-read-more">Read More</button>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="service-name">Digital Marketing</div>
+            <div class="service-desc">SEO, content strategy, and data-driven campaigns for measurable growth.</div>
+            <button class="btn-read-more">Read More</button>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-search"></i></div>
+            <div class="service-name">SEO Optimization</div>
+            <div class="service-desc">Technical SEO audits and strategies that push rankings to the top.</div>
+            <button class="btn-read-more">Read More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE 3: SKILLS + LANGUAGES ===== -->
+    <div class="page" id="page-3">
+      <div class="skills-page-inner" style="width:100%;">
+        <div class="skills-half">
+          <h2 class="section-title" style="color:#111;">Technical Skills</h2>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>HTML / CSS</span><span class="skill-pct">95%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:95%;"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>JavaScript</span><span class="skill-pct">88%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:88%;"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>React / Vue</span><span class="skill-pct">80%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:80%;"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>Node.js</span><span class="skill-pct">75%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:75%;"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>Python</span><span class="skill-pct">70%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:70%;"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label" style="color:#111;"><span>UI/UX Design</span><span class="skill-pct">85%</span></div>
+            <div class="skill-bar-bg" style="background:rgba(0,0,0,0.1);">
+              <div class="skill-bar-fill" style="width:85%;"></div>
+            </div>
+          </div>
+          <div class="nav-bar" style="position:absolute; left:0; right:50%; bottom:0; background:rgba(0,0,0,0.06); border-top:1px solid rgba(124,58,237,0.15);">
+            <button onclick="navigate(-1)" style="color:var(--purple); border-color:rgba(124,58,237,0.3);">&#8592; Prev</button>
+            <span class="page-num" style="color:var(--purple);">3 / 5</span>
+            <button onclick="navigate(1)" style="color:var(--purple); border-color:rgba(124,58,237,0.3);">Next &#8594;</button>
+          </div>
+        </div>
+
+        <div class="skills-half" style="background:var(--dark);">
+          <h2 class="section-title">Languages</h2>
+          <div class="lang-grid" style="margin-bottom:28px;">
+            <div class="lang-badge"><i class="fas fa-globe"></i><span>English <span class="lang-level">(Fluent)</span></span></div>
+            <div class="lang-badge"><i class="fas fa-globe"></i><span>Portuguese <span class="lang-level">(Native)</span></span></div>
+            <div class="lang-badge"><i class="fas fa-globe"></i><span>French <span class="lang-level">(Basic)</span></span></div>
+          </div>
+          <h2 class="section-title" style="margin-top:20px; font-size:1.3rem;">Soft Skills</h2>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Problem Solving</span>
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Teamwork</span>
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Communication</span>
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Creativity</span>
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Adaptability</span>
+            <span style="background:rgba(124,58,237,0.15); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; color:var(--purple-glow);">Time Management</span>
+          </div>
+          <div class="nav-bar" style="position:absolute; left:50%; right:0; bottom:0;">
+            <button onclick="navigate(-1)">&#8592; Prev</button>
+            <span class="page-num">4 / 5</span>
+            <button onclick="navigate(1)">Next &#8594;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE 4: CERTIFICATIONS ===== -->
+    <div class="page" id="page-4">
+      <div class="page-full">
+        <h2 class="section-title" style="font-size:2rem; margin-bottom:28px;">Certifications</h2>
+        <div class="certs-grid">
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fab fa-aws"></i></div>
+            <div class="cert-title">AWS Certified Developer</div>
+            <div class="cert-org">Amazon Web Services</div>
+            <span class="cert-year">2023</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fab fa-google"></i></div>
+            <div class="cert-title">Google UX Design</div>
+            <div class="cert-org">Google Career Certificates</div>
+            <span class="cert-year">2022</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fab fa-react"></i></div>
+            <div class="cert-title">React Professional</div>
+            <div class="cert-org">Meta / Coursera</div>
+            <span class="cert-year">2022</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fab fa-js"></i></div>
+            <div class="cert-title">JavaScript Algorithms</div>
+            <div class="cert-org">freeCodeCamp</div>
+            <span class="cert-year">2021</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fas fa-database"></i></div>
+            <div class="cert-title">Database Administration</div>
+            <div class="cert-org">Oracle Academy</div>
+            <span class="cert-year">2021</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="cert-title">Cybersecurity Essentials</div>
+            <div class="cert-org">Cisco Networking Academy</div>
+            <span class="cert-year">2020</span>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <button onclick="navigate(-1)">&#8592; Prev</button>
+          <span class="page-num">4 / 5</span>
+          <button onclick="navigate(1)">Next &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE 5: CONTACT ===== -->
+    <div class="page" id="page-5">
+      <div class="contact-page" style="width:100%; position:relative;">
+        <div class="contact-left">
+          <h2>Get In<br>Touch</h2>
+          <p> 
+Thank you for taking the time to explore my work. 
+If my skills and experiences resonate with your needs, I would be delighted to connect. 
+Please feel free to reach out—I look forward to meaningful collaborations and new opportunities.
+</p>
+          <div class="contact-info-item">
+            <i class="fas fa-envelope"></i>
+            <span>claidauanheca@gmail.com</a></span>
+          </div>
+          <div class="contact-info-item">
+            <i class="fas fa-phone"></i>
+            <span>(+60)1121822355</span>
+          </div>
+          <div class="contact-info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>No. 1, Persiaran Universiti, Putra Nilai, Bandar Baru Nilai, 71800 Nilai, Negeri Sembilan, Malaysia.
+</span>
+          </div>
+          <div class="social-links" style="margin-top:8px;">
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+
+        <div class="contact-right">
+          <h3>Send a Message</h3>
+          <div class="field-group">
+            <label>FULL NAME</label>
+            <input type="text" placeholder="Claida Jossias Uanheca">
+          </div>
+          <div class="field-group">
+            <label>EMAIL ADDRESS</label>
+            <input type="email" placeholder="claidauanheca@example.com">
+          </div>
+          <div class="field-group">
+            <label>SUBJECT</label>
+            <input type="text" placeholder="Request ...">
+          </div>
+          <div class="field-group">
+            <label>YOUR MESSAGE</label>
+            <textarea placeholder="Tell me about your ..."></textarea>
+          </div>
+          <button class="btn-send"><i class="fas fa-paper-plane" style="margin-right:8px;"></i>Send Message</button>
+        </div>
+
+        <div class="nav-bar" style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.25);">
+          <button onclick="navigate(-1)">&#8592; Prev</button>
+          <span class="page-num">5 / 5</span>
+          <button disabled style="opacity:0.3">Next &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /book -->
+</div><!-- /book-wrapper -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const pages = document.querySelectorAll('.page');
+  let current = 0;
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next < 0 || next >= pages.length) return;
+    pages[current].classList.remove('active');
+    current = next;
+    pages[current].classList.add('active');
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') navigate(1);
+    if (e.key === 'ArrowLeft')  navigate(-1);
+  });
+</script>
+</body>
+</html>
